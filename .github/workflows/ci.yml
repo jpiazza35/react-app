@@ -15,7 +15,7 @@ jobs:
           node-version: "12.x"
       - run: npm ci ## similar to npm install but more used in CI environments, link https://docs.npmjs.com/cli/v9/commands/npm-ci
       - run: npm run format:check ## check code format
-      - run: npm test -- --coverage  ## we run test wwwdddddd
+      - run: npm test -- --coverage  ## we run test 
         env: 
           CI: true
 
