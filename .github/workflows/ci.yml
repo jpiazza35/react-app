@@ -44,7 +44,6 @@ jobs:
         with:
           name: build
           path: build
-     # - uses: actions/download-artifact
 
       - run: npm install -g surge
 
