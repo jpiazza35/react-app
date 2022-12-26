@@ -27,8 +27,8 @@ jobs:
       - run: npm test -- --coverage ## we run test
         env:
           CI: true
-      
-      - name: upload Test Coverage 
+
+      - name: upload Test Coverage
         uses: actions/upload-artifact@v1
         with:
           name: code-coverage
@@ -38,7 +38,7 @@ jobs:
         if: github.event_name == 'push'
         run: npm run build
 
-      - name: upload Build Folder 
+      - name: upload Build Folder
         if: github.event_name == 'push'
         uses: actions/upload-artifact@v1
         with:
@@ -47,7 +47,7 @@ jobs:
       - uses: actions/download-artifact
 
       - run: npm install -g surge
-      
+
       - name: Deploy to staging
         if: github.event_name == 'push'
         run: surge --project ./build --domain ghactions-test1.decorous-size.surge.sh
