@@ -23,10 +23,11 @@ jobs:
       - name: Build project
         if: github.event_name == 'push'
         run: npm run build
+      - run: npm install -g surge
 
       - name: Deploy to staging
         if: github.event_name == 'push'
-        run: npx run surge --project ./build --domain ghactions-test.decorous-size.surge.sh
+        run: npm run surge --project ./build --domain ghactions-test.decorous-size.surge.sh
         env:
           SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
           SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
