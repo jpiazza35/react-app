@@ -1,0 +1,28 @@
+name: CI
+on:
+  pull_request:
+    branches: [develop]
+  push:
+    branches: [develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use NodeJS
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16.x'
+      - run: npm ci ## similar to npm install but more used in CI environments, link https://docs.npmjs.com/cli/v9/commands/npm-ci
+      - run: npm run format:check ## check code format
+      - run: npm test -- --coverage ## we run test
+        env:
+          CI: true
+      - name: Build project
+        if: github.event_name == 'push'
+        run: npm run build
+
+      - name: Deploy to staging
+        if: github.event_name == 'push'
+        run: npm run surge --project ./build --domain ghactions-test.decorous-size.surge.sh
