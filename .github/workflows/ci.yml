@@ -27,7 +27,7 @@ jobs:
 
       - name: Deploy to staging
         if: github.event_name == 'push'
-        run: surge --project ./build --domain ghactions-test.decorous-size.surge.sh
+        run: surge --project ./build --domain ghactions-test1.decorous-size.surge.sh
         env:
           SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
           SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
