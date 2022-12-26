@@ -19,10 +19,14 @@ jobs:
       - run: npm test -- --coverage ## we run test
         env:
           CI: true
+
       - name: Build project
         if: github.event_name == 'push'
         run: npm run build
 
       - name: Deploy to staging
         if: github.event_name == 'push'
-        run: npm run surge --project ./build --domain ghactions-test.decorous-size.surge.sh
+        run: npx run surge --project ./build --domain ghactions-test.decorous-size.surge.sh
+        env:
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
