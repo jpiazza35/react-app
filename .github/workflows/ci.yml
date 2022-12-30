@@ -48,13 +48,11 @@ jobs:
         with:
           name: build
           path: build
-
       - name: Zip Assets
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: |
           zip -r build.zip ./build
           zip -r coverage.zip ./coverage
-
       - name: Create a Release
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: npx semantic-release
@@ -64,15 +62,15 @@ jobs:
       - run: npm install -g surge
 
       - name: Deploy to staging
-        if: github.event_name == 'push' && github.refs == 'refs/heads/develop'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
         run: surge --project ./build --domain ghactions-test1.decorous-size.surge.sh
 
       - name: Deploy to Production
-        if: github.event_name == 'push' && github.refs == 'refs/heads/master'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: surge --project ./build --domain ghactions-prod.decorous-size.surge.sh
 
       - name: Coverage report upload
-        if: github.event_name == 'push' && github.refs == 'refs/heads/master'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: npx codecov
         env:
           CODECOV_TOKEN: $ {{ secrets.CODECOV_TOKEN }}
