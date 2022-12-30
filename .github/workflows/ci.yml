@@ -1,21 +1,61 @@
 name: CI
-
 on:
   pull_request:
-    branches: [develop]
+    branches: [develop, master]
+  push:
+    branches: [develop, master]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Use NodeJS
         uses: actions/setup-node@v1
         with:
-          node-version: "12.x"
+          node-version: '16.x'
       - run: npm ci ## similar to npm install but more used in CI environments, link https://docs.npmjs.com/cli/v9/commands/npm-ci
       - run: npm run format:check ## check code format
-      - run: npm test -- --coverage  ## we run test wwwddd
-        env: 
+      - run: npm test -- --coverage ## we run test
+        env:
           CI: true
 
+      - name: upload Test Coverage
+        uses: actions/upload-artifact@v1
+        with:
+          name: code-coverage
+          path: coverage
+
+      - name: Build project
+        if: github.event_name == 'push'
+        run: npm run build
+
+      - name: upload Build Folder
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v1
+        with:
+          name: build
+          path: build
+
+      - name: Create a Release
+        if: github.event_name == 'push' && github.ref == 'refs/head/master'
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: npm install -g surge
+
+      - name: Deploy to staging
+        if: github.event_name == 'push'
+        run: surge --project ./build --domain ghactions-test1.decorous-size.surge.sh
+        env:
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
