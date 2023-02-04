@@ -38,6 +38,9 @@
     ]
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.4.2",
+    "@commitlint/config-conventional": "^17.4.2",
+    "husky": "^8.0.3",
     "semantic-release": "^19.0.5"
   }
 }
